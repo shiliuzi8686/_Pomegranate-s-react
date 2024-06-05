@@ -3,6 +3,10 @@ import { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+/**
+ * useEffect
+ */
+
 async function fetchData(): Promise<Number> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
