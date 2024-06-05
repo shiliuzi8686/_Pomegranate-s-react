@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useImperativeHandle } from 'react';
 import './App.css';
 
 /**
@@ -13,24 +13,39 @@ declare global {
   }
 }
 
-const Shiliu: React.ForwardRefRenderFunction<HTMLInputElement> = (props, ref) => {
+interface RefProps {
+  bbb: () => void;
+}
+
+const Shiliu: React.ForwardRefRenderFunction<RefProps> = (props, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  // 不把原生标签暴露出去，而是暴露一些自定义内容
+  useImperativeHandle(ref, () => {
+    return {
+      bbb() {
+        inputRef.current?.focus()
+      }
+    }
+  }, [inputRef])
   return <div>
-    <input ref={ref} />
+    <input ref={inputRef} />
   </div>
 }
 
 const WrapedShiliu = React.forwardRef(Shiliu)
 
 function App() {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const action = useRef<RefProps>(null)
   // window.iii = inputRef
   useEffect( () => {
-    inputRef?.current?.focus()
-    console.log('inputRef', inputRef);
+    console.log('action', action);
+    
+    action?.current?.bbb()
+    // console.log('inputRef', inputRef);
   })
 
   return <div>
-    <WrapedShiliu ref={inputRef} />
+    <WrapedShiliu ref={action} />
   </div>
 }
 
